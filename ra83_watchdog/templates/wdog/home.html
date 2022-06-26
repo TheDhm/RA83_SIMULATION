@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>RA83 DASHBOARD</title>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+</head>
+
+<body>
+<div class="ui blue container">
+    <h2 class="ui center aligned violet icon header">
+      <i class="settings icon"></i>
+      <div class="content">
+        RA83
+      </div>
+    </h2>
+    <div class="ui pink message">
+      <div class="header">
+        Token : [{{ worker_t.token }}]
+      </div>
+        <div class="header">
+        REQ : [{{ worker_t.req }}]
+      </div>
+    </div>
+    <div class="ui four cards">
+        {% for worker in workers %}
+            <div class="red card">
+                <div class="content">
+                    <i class="right floated desktop large icon"></i>
+                    <div class="header">
+                        WORKER {{ worker.id }}
+                    </div>
+                    <div class="description">
+                        T: [{{ worker.token }}]
+                    </div>
+                    <div class="description">
+                        R: [{{ worker.req }}]
+                    </div>
+                </div>
+                <div class="extra content">
+                <div class="ui two buttons">
+                    {% if worker.has_token %}
+                    <div class="ui blue button">Has Token</div>
+                        {% if worker.in_sc %}
+                        <div class="ui green button">CS</div>
+                        {% endif %}
+                    {% else %}
+                    <div class="ui yellow button">Waiting for token</div>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
