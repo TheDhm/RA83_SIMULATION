@@ -1,6 +1,6 @@
 # Ricart and Agrawala 1983 (RA83) SIMULATION
 ## About
-A simulation of RA83 with 10 containers (running a simple django server) as 10 stations, and a watchdog server to watch the evolution of the algorithm.
+A simulation of RA83 with 10 containers (running a simple django server) as 10 nodes, and a watchdog server to watch the evolution of the algorithm.
 ## Requirements
 * Docker
 * Django
