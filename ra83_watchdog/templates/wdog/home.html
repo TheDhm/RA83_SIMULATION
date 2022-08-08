@@ -46,12 +46,12 @@
                 <div class="extra content">
                 <div class="ui two buttons">
                     {% if worker.has_token %}
-                    <div class="ui blue button">Has Token</div>
+                    <div class="ui green button">Has Token</div>
                         {% if worker.in_sc %}
-                        <div class="ui green button">CS</div>
+                        <div class="ui orange button">CS</div>
                         {% endif %}
                     {% else %}
-                    <div class="ui yellow button">Waiting for token</div>
+                    <div class="ui red button">Waiting for token</div>
                     {% endif %}
                 </div>
                 </div>
