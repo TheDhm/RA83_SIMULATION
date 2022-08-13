@@ -21,7 +21,7 @@ request_vector = 10*[0]
 
 
 def send_status(token, req, has_token, in_cs):
-    data = {'token': token, 'req': req, 'has_token': has_token, 'in_cs': in_cs}
+    data = {'worker': worker_id, 'token': token, 'req': req, 'has_token': has_token, 'in_cs': in_cs}
     headers = {"Content-type": "application/json"}
     requests.post("http://172.17.0.1:8000/post/"+str(worker_id)+"/", headers=headers, json=data)
 

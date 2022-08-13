@@ -1,11 +1,15 @@
 import json
 
+from asgiref.sync import async_to_sync
 from django.shortcuts import render, HttpResponse, Http404
 from .models import Worker
+import channels.layers
+from django.views.decorators.cache import cache_page
 
 app_name = "wdog"
 
 
+# @cache_page(60 * 15)
 def home(request):
     if request.method == 'GET':
         workers = Worker.objects.all()
@@ -22,7 +26,15 @@ def home(request):
 def post_status(request, worker_id):
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data)
+
+        channel_layer = channels.layers.get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            'watchdog_group',
+            {
+                'type': 'update_status',
+                'message': data
+            }
+        )
 
         has_token = data['has_token']
         token = data['token']

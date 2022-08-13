@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>RA83 DASHBOARD</title>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+</head>
+
+<body>
+<script>
+
+        const watchdogSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/watchdog/'
+        );
+
+        watchdogSocket.onmessage = function(e) {
+            let data = JSON.parse(e.data)['message'];
+            document.getElementById(data['worker']+'-default-buttons').style.display = "none";
+
+            document.getElementById(data['worker']+'-T').innerHTML = 'T:['+data['token']+']';
+            document.getElementById(data['worker']+'-R').innerHTML = 'R:['+data['req']+']';
+
+            if(data['has_token']){
+
+                document.getElementById('global-token').innerHTML = 'Token: ['+data['token']+']';
+                document.getElementById('global-req').innerHTML = 'REQ: ['+data['req']+']';
+
+                if(data['in_cs']){
+
+                    document.getElementById(data['worker']+'-has-token-and-cs').style.display = "block";
+                    document.getElementById(data['worker']+'-has-token').style.display = "none";
+                    document.getElementById(data['worker']+'-has-no-token').style.display = "none";
+
+                }else{
+
+                    document.getElementById(data['worker']+'-has-token-and-cs').style.display = "none";
+                    document.getElementById(data['worker']+'-has-token').style.display = "block";
+                    document.getElementById(data['worker']+'-has-no-token').style.display = "none";
+
+                }
+            }else{
+                document.getElementById(data['worker']+'-has-token-and-cs').style.display = "none";
+                document.getElementById(data['worker']+'-has-token').style.display = "none";
+                document.getElementById(data['worker']+'-has-no-token').style.display = "block";
+            }
+        };
+
+        watchdogSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+    </script>
+<div class="ui blue container">
+    <h2 class="ui center aligned violet icon header">
+      <i class="settings icon"></i>
+      <div class="content">
+        RA83
+      </div>
+    </h2>
+    <div class="ui pink message">
+      <div id="global-token" class="header">
+        Token : [{{ worker_t.token }}]
+      </div>
+        <div id="global-req" class="header">
+        REQ : [{{ worker_t.req }}]
+      </div>
+    </div>
+    <div class="ui four cards">
+        {% for worker in workers %}
+            <div class="red card">
+                <div class="content">
+                    <i class="right floated desktop large icon"></i>
+                    <div class="header">
+                        WORKER {{ worker.id }}
+                    </div>
+                    <div id="{{ worker.id }}-T" class="description">
+                        T: [{{ worker.token }}]
+                    </div>
+                    <div id="{{ worker.id }}-R" class="description">
+                        R: [{{ worker.req }}]
+                    </div>
+                </div>
+                <div class="extra content">
+                <div id="{{ worker.id }}-default-buttons" class="ui two buttons" hidden>
+                    {% if worker.has_token %}
+                    <div class="ui green button">Token</div>
+                        {% if worker.in_sc %}
+                        <div class="ui orange button">CS</div>
+                        {% endif %}
+                    {% else %}
+                    <div class="ui red button">Waiting for token</div>
+                    {% endif %}
+                </div>
+
+                    <div id="{{ worker.id }}-has-token-and-cs" class="ui two buttons" style="display: none">
+                        <div class="ui green button">Token</div>
+                        <div class="ui orange button">CS</div>
+                    </div>
+
+                    <div id="{{ worker.id }}-has-token" class="ui green button" style="display: none">
+                        Token
+                    </div>
+
+                    <div id="{{ worker.id }}-has-no-token" class="ui red button" style="display: none">
+                        Waiting for token
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
